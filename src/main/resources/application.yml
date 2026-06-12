@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: agent-orchestrator
+
+server:
+  port: 8080
+
+anthropic:
+  api-key: ${ANTHROPIC_API_KEY:}
+  base-url: https://api.anthropic.com
+  model: claude-sonnet-4-6
+  max-tokens: 1024
+  timeout-seconds: 30
+
+agent:
+  max-iterations: 8
+  system-prompt: >
+    You are a customer-support agent for an e-commerce store.
+    Use the available tools to answer questions about orders, weather-dependent
+    delivery estimates, and price calculations. If a tool fails, explain the
+    problem to the user instead of guessing. Be concise.
+
+logging:
+  level:
+    com.saran.agent: INFO
