@@ -1,5 +1,6 @@
 package com.saran.agent.llm;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.saran.agent.llm.model.AnthropicModels.MessagesRequest;
 import com.saran.agent.llm.model.AnthropicModels.MessagesResponse;
 import org.slf4j.Logger;
@@ -46,13 +47,20 @@ public class ClaudeClient implements LlmClient {
             throw new LlmException("ANTHROPIC_API_KEY is not configured");
         }
         try {
+            log.debug("Request body: {}", new ObjectMapper().writeValueAsString(request));
+        } catch (Exception e) {
+            log.debug("Could not serialize request for logging: {}", e.getMessage());
+        }
+        try {
             MessagesResponse response = restClient.post()
                     .uri("/v1/messages")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(request)
                     .retrieve()
                     .onStatus(HttpStatusCode::isError, (req, res) -> {
-                        throw new LlmException("Anthropic API returned " + res.getStatusCode());
+                        String body = new String(res.getBody().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+                        log.error("Anthropic API error {}: {}", res.getStatusCode(), body);
+                        throw new LlmException("Anthropic API returned " + res.getStatusCode() + ": " + body);
                     })
                     .body(MessagesResponse.class);
             if (response == null) {

@@ -22,4 +22,4 @@ agent:
 
 logging:
   level:
-    com.saran.agent: INFO
+    com.saran.agent: DEBUG
