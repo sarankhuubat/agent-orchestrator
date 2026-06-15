@@ -77,7 +77,7 @@ public class AgentService {
             working.add(assistantMsg);
             newMessages.add(assistantMsg);
 
-            if (!response.wantsToolUse()) {
+            if (!response.wantsToolUse()) {  // stop_reason != "tool_use"
                 conversationStore.append(sessionId, newMessages);
                 return new AgentResult(response.joinedText(), toolsUsed, iteration);
             }
@@ -99,7 +99,7 @@ public class AgentService {
     private Message executeRequestedTools(MessagesResponse response, List<String> toolsUsed) {
         List<ContentBlock> results = new ArrayList<>();
         for (ContentBlock block : response.content()) {
-            if (!block.isToolUse()) {
+            if (!block.hasTypeToolUse()) {
                 continue;
             }
             toolsUsed.add(block.name());

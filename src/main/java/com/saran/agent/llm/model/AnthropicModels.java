@@ -60,11 +60,11 @@ public final class AnthropicModels {
                     toolUseId, result, isError ? Boolean.TRUE : null);
         }
 
-        public boolean isText() {
+        public boolean hasTypeText() {
             return "text".equals(type);
         }
 
-        public boolean isToolUse() {
+        public boolean hasTypeToolUse() {
             return "tool_use".equals(type);
         }
     }
@@ -108,7 +108,7 @@ public final class AnthropicModels {
                 return "";
             }
             return content.stream()
-                    .filter(ContentBlock::isText)
+                    .filter(ContentBlock::hasTypeText)
                     .map(ContentBlock::text)
                     .reduce("", (a, b) -> a.isEmpty() ? b : a + "\n" + b);
         }
